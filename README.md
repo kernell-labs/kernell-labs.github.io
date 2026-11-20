@@ -25,4 +25,4 @@ node test-style.mjs
 
 Pushing to `main` builds and publishes to GitHub Pages via [.github/workflows/deploy.yml](.github/workflows/deploy.yml). Enable it once under **Settings → Pages → Source: GitHub Actions**.
 
-Lives at <https://kernellabs-io.github.io> — an org site, served at the root, so no `basePath`. For a custom domain later, add `public/CNAME` containing the bare domain.
+Lives at <https://kernell-labs.github.io> — an org site, served at the root, so no `basePath`. For a custom domain later, add `public/CNAME` containing the bare domain.
