@@ -1,19 +1,7 @@
-// Self-check for the CSS-string -> React style object parser in app/page.jsx.
-// Run: node test-style.mjs
+// Self-check for the CSS-string parser and accent shading in app/style.ts.
+// Run: npm test   (node strips the types natively, no test framework)
 import assert from 'node:assert/strict';
-
-const s = (css) =>
-  Object.fromEntries(
-    css
-      .split(';')
-      .map((r) => r.trim())
-      .filter(Boolean)
-      .map((r) => {
-        const i = r.indexOf(':');
-        const k = r.slice(0, i).trim();
-        return [k.replace(/-([a-z])/g, (_, c) => c.toUpperCase()), r.slice(i + 1).trim()];
-      })
-  );
+import { s, shade, two } from './app/style.ts';
 
 // camelCase, vendor prefixes, values containing colons/commas/parens, trailing semicolons
 assert.deepEqual(s('display: flex; gap: 12px'), { display: 'flex', gap: '12px' });
@@ -32,16 +20,10 @@ assert.deepEqual(s("font-family: 'Geist Mono', monospace; font: inherit"), {
   font: 'inherit',
 });
 
-// accentInk shade()
-const shade = (hex, f) => {
-  const n = parseInt(hex.replace('#', ''), 16);
-  const c = (v) => Math.round(v * f);
-  return (
-    '#' +
-    ((1 << 24) + (c((n >> 16) & 255) << 16) + (c((n >> 8) & 255) << 8) + c(n & 255)).toString(16).slice(1)
-  );
-};
 assert.equal(shade('#FFFFFF', 1), '#ffffff');
 assert.equal(shade('#2F4BFF', 0.78), '#253bc7');
+
+assert.equal(two(3), '03');
+assert.equal(two(12), '12');
 
 console.log('ok');

@@ -1,11 +1,61 @@
 // All site copy lives here. Edit text, not markup.
 
+/** A `key: value` row rendered in the config pane of the hero's product window. */
+export type ConfigLine = [key: string, value: string];
+/** A use case: heading plus one-line description. */
+export type UseCase = [title: string, description: string];
+
+export interface PipelineFile {
+  label: string;
+  cmd: string;
+  comment: string;
+  lines: ConfigLine[];
+}
+
+export interface PlatformStep {
+  name: string;
+  tag: string;
+  body: string;
+  points: string[];
+}
+
+export interface Sector {
+  name: string;
+  short: string;
+  deploy: string;
+  title: string;
+  body: string;
+  uses: UseCase[];
+}
+
+export interface Device {
+  name: string;
+  app: string;
+  hw: string;
+  ask: string;
+  reply: string;
+  title: string;
+  body: string;
+  uses: string[];
+}
+
+export interface DeployMode {
+  name: string;
+  hint: string;
+  code: string;
+  boundary: string;
+  egress: string;
+  ring: string;
+  body: string;
+  tags: string[];
+}
+
 export const ACCENT = '#2F4BFF'; // brand accent — swap for #1F1F1F / #0F7A5C / #6D3BFF / #FA520F
 export const EMAIL = 'hello@kernellabs.ai';
 export const LOCATION = 'Lagos · Working with teams globally';
 export const RUN_ID = 'run #4817';
 
-export const FILES = [
+export const FILES: PipelineFile[] = [
   {
     label: 'Tune',
     cmd: 'tune --config tune.yaml',
@@ -61,7 +111,7 @@ export const FILES = [
   },
 ];
 
-export const PIPE = [
+export const PIPE: UseCase[] = [
   ['Foundry', 'Data mapped, cleaned and versioned'],
   ['Tune', 'Post-training on your data'],
   ['Eval', 'Domain suite and red-team'],
@@ -69,7 +119,7 @@ export const PIPE = [
   ['Deploy', 'Serving inside your perimeter'],
 ];
 
-export const STEPS = [
+export const STEPS: PlatformStep[] = [
   {
     name: 'Data foundry',
     tag: 'Ingest · clean · structure',
@@ -112,7 +162,7 @@ export const STEPS = [
   },
 ];
 
-export const SECTORS = [
+export const SECTORS: Sector[] = [
   {
     name: 'Healthcare',
     short: 'healthcare',
@@ -188,7 +238,7 @@ export const SECTORS = [
   },
 ];
 
-export const DEVICES = [
+export const DEVICES: Device[] = [
   {
     name: 'Phones',
     app: 'Field Assist',
@@ -247,7 +297,7 @@ export const DEVICES = [
   },
 ];
 
-export const MODES = [
+export const MODES: DeployMode[] = [
   {
     name: 'Private cloud',
     hint: 'VPC',
@@ -290,7 +340,7 @@ export const MODES = [
   },
 ];
 
-export const MARQUEE_WORDS = [
+export const MARQUEE_WORDS: string[] = [
   'Healthcare',
   'Finance',
   'Energy',
@@ -301,7 +351,7 @@ export const MARQUEE_WORDS = [
   'Insurance',
 ];
 
-export const ROTATING = [
+export const ROTATING: string[] = [
   'healthcare.',
   'finance.',
   'energy.',

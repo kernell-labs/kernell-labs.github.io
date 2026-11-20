@@ -2,7 +2,7 @@
 
 Landing page for Kernel Labs — specialized models on proprietary data, deployed anywhere and owned by you.
 
-Next.js App Router, static export, no dependencies beyond Next/React.
+Next.js App Router, TypeScript, static export, no runtime dependencies beyond Next/React.
 
 ```bash
 npm install
@@ -11,14 +11,14 @@ npm run dev
 
 ## Editing
 
-- **Copy and content** — [app/data.js](app/data.js). Sectors, devices, deployment modes, pipeline configs, the brand accent, email and location all live there.
-- **Markup and layout** — [app/page.jsx](app/page.jsx). Styles are the design's original CSS strings passed through a small `s()` parser, so declarations stay copy-pasteable from the source design.
+- **Copy and content** — [app/data.ts](app/data.ts). Sectors, devices, deployment modes, pipeline configs, the brand accent, email and location all live there, with the shapes typed.
+- **Markup and layout** — [app/page.tsx](app/page.tsx).
+- **Helpers** — [app/style.ts](app/style.ts). `s()` parses the design's original CSS declaration strings into typed `CSSProperties`, so styles stay copy-pasteable from the source design instead of hand-camelCased.
 - **Animations** — [app/globals.css](app/globals.css).
 
-Run the style-parser self-check:
-
 ```bash
-node test-style.mjs
+npm test        # asserts the CSS parser and accent shading
+npm run typecheck
 ```
 
 ## Deployment

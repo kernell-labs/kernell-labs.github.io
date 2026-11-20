@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   ACCENT,
   DEVICES,
@@ -15,50 +15,209 @@ import {
   SECTORS,
   STEPS,
 } from './data';
-
-// Keeps the design's inline CSS strings verbatim instead of hand-camelCasing every declaration.
-const s = (css) =>
-  Object.fromEntries(
-    css
-      .split(';')
-      .map((r) => r.trim())
-      .filter(Boolean)
-      .map((r) => {
-        const i = r.indexOf(':');
-        const k = r.slice(0, i).trim();
-        return [k.replace(/-([a-z])/g, (_, c) => c.toUpperCase()), r.slice(i + 1).trim()];
-      })
-  );
-
-const shade = (hex, f) => {
-  const n = parseInt(hex.replace('#', ''), 16);
-  const c = (v) => Math.round(v * f);
-  return (
-    '#' +
-    ((1 << 24) + (c((n >> 16) & 255) << 16) + (c((n >> 8) & 255) << 8) + c(n & 255))
-      .toString(16)
-      .slice(1)
-  );
-};
-
-const two = (n) => (n < 10 ? '0' : '') + n;
+import { s, shade, two } from './style';
 
 const accent = ACCENT;
 const accentInk = shade(accent, 0.78);
 
-const Check = ({ size = 15, stroke = accent, width = 2 }) => (
+interface Product {
+  href: string;
+  name: string;
+  desc: string;
+  icon: ReactNode;
+  isNew?: boolean;
+}
+
+interface Principle {
+  n: string;
+  title: string;
+  body: string;
+}
+
+interface ApproachStep {
+  step: string;
+  title: string;
+  body: string;
+}
+
+interface FooterNav {
+  label: string;
+  heading: string;
+  links: [href: string, text: string][];
+}
+
+const PRODUCTS: Product[] = [
+  {
+    href: '#platform',
+    name: 'Foundry',
+    desc: 'Turn raw records, documents and logs into training-ready data.',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
+        <ellipse cx="18" cy="9" rx="11" ry="4" />
+        <path d="M7 9v9c0 2.2 4.9 4 11 4s11-1.8 11-4V9" />
+        <path d="M7 18v9c0 2.2 4.9 4 11 4s11-1.8 11-4v-9" />
+      </svg>
+    ),
+  },
+  {
+    href: '#platform',
+    name: 'Tune',
+    desc: 'Fine-tuning, preference tuning and RL on open-weight models.',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
+        <path d="M6 26c4-10 8-14 12-14s8 4 12 14" />
+        <circle cx="18" cy="12" r="3" fill={accent} stroke="none" />
+        <path d="M4 30h28" />
+      </svg>
+    ),
+  },
+  {
+    href: '#platform',
+    name: 'Eval',
+    desc: 'Benchmarks built from your work, red-teaming and release gates.',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
+        <rect x="5" y="5" width="26" height="26" rx="5" />
+        <path d="M11 23l5-6 4 4 6-8" />
+      </svg>
+    ),
+  },
+  {
+    href: '#ondevice',
+    name: 'Edge',
+    isNew: true,
+    desc: 'Distilled small models that run offline on phones and edge hardware.',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
+        <rect x="11" y="3" width="14" height="30" rx="3.5" />
+        <rect x="15" y="14" width="6" height="6" rx="1.5" fill={accent} stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    href: '#deploy',
+    name: 'Serve',
+    desc: 'Optimized inference in your cloud, data centre or air-gapped site.',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
+        <rect x="5" y="6" width="26" height="9" rx="2.5" />
+        <rect x="5" y="21" width="26" height="9" rx="2.5" />
+        <circle cx="10" cy="10.5" r="1.4" fill="#1F1F1F" />
+        <circle cx="10" cy="25.5" r="1.4" fill="#1F1F1F" />
+      </svg>
+    ),
+  },
+];
+
+const PRINCIPLES: Principle[] = [
+  {
+    n: '001',
+    title: 'Your weights.',
+    body: 'Every model we train is yours. No lock-in, no per-token rent on your own intelligence.',
+  },
+  {
+    n: '002',
+    title: 'Your perimeter.',
+    body: 'Training and inference run where the data lives, down to a single device.',
+  },
+  {
+    n: '003',
+    title: 'Your outcomes.',
+    body: 'Measured on your tasks and your people, never on public leaderboards.',
+  },
+];
+
+const EDGE_PIPELINE: [label: string, body: string][] = [
+  ['01 · DISTILL', 'A compact student learns your large model’s skills and voice.'],
+  ['02 · QUANTIZE', 'Memory and power cut to fit the chip it ships on.'],
+  ['03 · MEASURE', 'Latency and quality tested on the real device, not a simulator.'],
+];
+
+const APPROACH: ApproachStep[] = [
+  {
+    step: 'STEP 01',
+    title: 'Scope',
+    body: 'We pick one high-value problem with you, audit the data you already have and define what success looks like in production.',
+  },
+  {
+    step: 'STEP 02',
+    title: 'Build',
+    body: 'Our research engineers post-train, evaluate and iterate with your experts in the loop until the model clears the bar you set.',
+  },
+  {
+    step: 'STEP 03',
+    title: 'Own',
+    body: 'You receive the weights, the pipelines and the playbook. Your team runs it, and we stay close for the next problem.',
+  },
+];
+
+const SECTOR_OPTIONS: string[] = [
+  'Healthcare',
+  'Finance',
+  'Energy',
+  'Defence & security',
+  'Agriculture',
+  'Public sector',
+  'Telecom & mobile',
+  'Other',
+];
+
+const FOOTER: FooterNav[] = [
+  {
+    label: 'Products',
+    heading: 'PRODUCTS',
+    links: [
+      ['#products', 'Foundry'],
+      ['#products', 'Tune'],
+      ['#products', 'Eval'],
+      ['#ondevice', 'Edge'],
+      ['#deploy', 'Serve'],
+    ],
+  },
+  {
+    label: 'Sectors',
+    heading: 'SECTORS',
+    links: [
+      ['#sectors', 'Healthcare'],
+      ['#sectors', 'Finance'],
+      ['#sectors', 'Energy'],
+      ['#sectors', 'Defence'],
+      ['#sectors', 'Public sector'],
+    ],
+  },
+  {
+    label: 'Company',
+    heading: 'COMPANY',
+    links: [
+      ['#approach', 'Approach'],
+      ['#contact', 'Careers'],
+      ['#contact', 'Contact'],
+      ['#top', 'Privacy'],
+    ],
+  },
+];
+
+const Check = ({
+  size = 15,
+  stroke = accent,
+  width = 2,
+}: {
+  size?: number;
+  stroke?: string;
+  width?: number;
+}) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={stroke} strokeWidth={width} aria-hidden="true">
     <path d="M3 8.5l3 3 7-7" />
   </svg>
 );
 
-const Arrow = ({ size = 16, stroke = '#FFFFFF' }) => (
+const Arrow = ({ size = 16, stroke = '#FFFFFF' }: { size?: number; stroke?: string }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={stroke} strokeWidth="1.8" aria-hidden="true">
     <path d="M3 8h10M9 4l4 4-4 4" />
   </svg>
 );
 
-const Logo = ({ size = 26 }) => (
+const Logo = ({ size = 26 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 28 28" aria-hidden="true">
     <rect x="1" y="1" width="26" height="26" rx="7" fill="#1F1F1F" />
     <rect x="9" y="9" width="10" height="10" rx="2.5" fill={accent} />
@@ -527,68 +686,7 @@ export default function Page() {
           </p>
         </div>
         <div style={s('display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px')}>
-          {[
-            {
-              href: '#platform',
-              name: 'Foundry',
-              desc: 'Turn raw records, documents and logs into training-ready data.',
-              icon: (
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
-                  <ellipse cx="18" cy="9" rx="11" ry="4" />
-                  <path d="M7 9v9c0 2.2 4.9 4 11 4s11-1.8 11-4V9" />
-                  <path d="M7 18v9c0 2.2 4.9 4 11 4s11-1.8 11-4v-9" />
-                </svg>
-              ),
-            },
-            {
-              href: '#platform',
-              name: 'Tune',
-              desc: 'Fine-tuning, preference tuning and RL on open-weight models.',
-              icon: (
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
-                  <path d="M6 26c4-10 8-14 12-14s8 4 12 14" />
-                  <circle cx="18" cy="12" r="3" fill={accent} stroke="none" />
-                  <path d="M4 30h28" />
-                </svg>
-              ),
-            },
-            {
-              href: '#platform',
-              name: 'Eval',
-              desc: 'Benchmarks built from your work, red-teaming and release gates.',
-              icon: (
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
-                  <rect x="5" y="5" width="26" height="26" rx="5" />
-                  <path d="M11 23l5-6 4 4 6-8" />
-                </svg>
-              ),
-            },
-            {
-              href: '#ondevice',
-              name: 'Edge',
-              isNew: true,
-              desc: 'Distilled small models that run offline on phones and edge hardware.',
-              icon: (
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
-                  <rect x="11" y="3" width="14" height="30" rx="3.5" />
-                  <rect x="15" y="14" width="6" height="6" rx="1.5" fill={accent} stroke="none" />
-                </svg>
-              ),
-            },
-            {
-              href: '#deploy',
-              name: 'Serve',
-              desc: 'Optimized inference in your cloud, data centre or air-gapped site.',
-              icon: (
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#1F1F1F" strokeWidth="1.5" aria-hidden="true">
-                  <rect x="5" y="6" width="26" height="9" rx="2.5" />
-                  <rect x="5" y="21" width="26" height="9" rx="2.5" />
-                  <circle cx="10" cy="10.5" r="1.4" fill="#1F1F1F" />
-                  <circle cx="10" cy="25.5" r="1.4" fill="#1F1F1F" />
-                </svg>
-              ),
-            },
-          ].map((p) => (
+          {PRODUCTS.map((p) => (
             <a
               key={p.name}
               href={p.href}
@@ -641,29 +739,25 @@ export default function Page() {
             'max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr))'
           )}
         >
-          {[
-            ['001', 'Your weights.', 'Every model we train is yours. No lock-in, no per-token rent on your own intelligence.', true],
-            ['002', 'Your perimeter.', 'Training and inference run where the data lives, down to a single device.', true],
-            ['003', 'Your outcomes.', 'Measured on your tasks and your people, never on public leaderboards.', false],
-          ].map(([n, title, body, border]) => (
+          {PRINCIPLES.map((p, i) => (
             <div
-              key={n}
+              key={p.n}
               style={s(
                 `padding: 48px clamp(20px, 4vw, 40px); ${
-                  border ? 'border-right: 1px solid #ECEDF0; ' : ''
+                  i < PRINCIPLES.length - 1 ? 'border-right: 1px solid #ECEDF0; ' : ''
                 }display: flex; flex-direction: column; gap: 56px`
               )}
             >
-              <span style={s("font-family: 'Geist Mono', monospace; font-size: 12px; color: #5F6470")}>{n}</span>
+              <span style={s("font-family: 'Geist Mono', monospace; font-size: 12px; color: #5F6470")}>{p.n}</span>
               <div style={s('display: flex; flex-direction: column; gap: 10px')}>
                 <span
                   style={s(
                     'font-weight: 500; font-size: clamp(36px, 3.6vw, 52px); letter-spacing: -0.035em; line-height: 1'
                   )}
                 >
-                  {title}
+                  {p.title}
                 </span>
-                <span style={s('color: #5F6470')}>{body}</span>
+                <span style={s('color: #5F6470')}>{p.body}</span>
               </div>
             </div>
           ))}
@@ -1092,11 +1186,7 @@ export default function Page() {
               </div>
             </div>
             <div style={s('display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 12px')}>
-              {[
-                ['01 · DISTILL', 'A compact student learns your large model’s skills and voice.'],
-                ['02 · QUANTIZE', 'Memory and power cut to fit the chip it ships on.'],
-                ['03 · MEASURE', 'Latency and quality tested on the real device, not a simulator.'],
-              ].map(([k, v]) => (
+              {EDGE_PIPELINE.map(([k, v]) => (
                 <div
                   key={k}
                   style={s(
@@ -1276,33 +1366,17 @@ export default function Page() {
             </h2>
           </div>
           <div style={s('display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px')}>
-            {[
-              [
-                'STEP 01',
-                'Scope',
-                'We pick one high-value problem with you, audit the data you already have and define what success looks like in production.',
-              ],
-              [
-                'STEP 02',
-                'Build',
-                'Our research engineers post-train, evaluate and iterate with your experts in the loop until the model clears the bar you set.',
-              ],
-              [
-                'STEP 03',
-                'Own',
-                'You receive the weights, the pipelines and the playbook. Your team runs it, and we stay close for the next problem.',
-              ],
-            ].map(([k, title, body]) => (
+            {APPROACH.map((a) => (
               <div
-                key={k}
+                key={a.step}
                 style={s(
                   'border: 1px solid #E6E7EB; border-radius: 0; padding: 32px; display: flex; flex-direction: column; gap: 64px; background: #FFFFFF'
                 )}
               >
-                <span style={s(`font-family: 'Geist Mono', monospace; font-size: 12px; color: ${accentInk}`)}>{k}</span>
+                <span style={s(`font-family: 'Geist Mono', monospace; font-size: 12px; color: ${accentInk}`)}>{a.step}</span>
                 <div style={s('display: flex; flex-direction: column; gap: 10px')}>
-                  <h3 style={s('margin: 0; font-weight: 500; font-size: 30px; letter-spacing: -0.03em')}>{title}</h3>
-                  <p style={s('margin: 0; color: #5F6470')}>{body}</p>
+                  <h3 style={s('margin: 0; font-weight: 500; font-size: 30px; letter-spacing: -0.03em')}>{a.title}</h3>
+                  <p style={s('margin: 0; color: #5F6470')}>{a.body}</p>
                 </div>
               </div>
             ))}
@@ -1420,16 +1494,7 @@ export default function Page() {
                       'font: inherit; font-weight: 400; font-size: 16px; padding: 13px 15px; border-radius: 0; border: 1px solid #DFE1E6; background: #FFFDF7; color: #1F1F1F'
                     )}
                   >
-                    {[
-                      'Healthcare',
-                      'Finance',
-                      'Energy',
-                      'Defence & security',
-                      'Agriculture',
-                      'Public sector',
-                      'Telecom & mobile',
-                      'Other',
-                    ].map((o) => (
+                    {SECTOR_OPTIONS.map((o) => (
                       <option key={o}>{o}</option>
                     ))}
                   </select>
@@ -1440,7 +1505,7 @@ export default function Page() {
                   What are you trying to solve?
                   <textarea
                     name="message"
-                    rows="4"
+                    rows={4}
                     placeholder="The problem, the data you have, and where it has to run."
                     style={s(
                       'font: inherit; font-weight: 400; font-size: 16px; padding: 13px 15px; border-radius: 0; border: 1px solid #DFE1E6; background: #FFFDF7; color: #1F1F1F; resize: vertical'
@@ -1479,18 +1544,14 @@ export default function Page() {
               Specialized models on proprietary data, deployed anywhere and owned by you.
             </p>
           </div>
-          {[
-            ['Products', 'PRODUCTS', [['#products', 'Foundry'], ['#products', 'Tune'], ['#products', 'Eval'], ['#ondevice', 'Edge'], ['#deploy', 'Serve']]],
-            ['Sectors', 'SECTORS', [['#sectors', 'Healthcare'], ['#sectors', 'Finance'], ['#sectors', 'Energy'], ['#sectors', 'Defence'], ['#sectors', 'Public sector']]],
-            ['Company', 'COMPANY', [['#approach', 'Approach'], ['#contact', 'Careers'], ['#contact', 'Contact'], ['#top', 'Privacy']]],
-          ].map(([label, heading, links]) => (
-            <nav key={label} aria-label={label} style={s('display: flex; flex-direction: column; gap: 10px')}>
+          {FOOTER.map((nav) => (
+            <nav key={nav.label} aria-label={nav.label} style={s('display: flex; flex-direction: column; gap: 10px')}>
               <span
                 style={s("font-family: 'Geist Mono', monospace; font-size: 11.5px; color: #5F6470; letter-spacing: 0.06em")}
               >
-                {heading}
+                {nav.heading}
               </span>
-              {links.map(([href, text]) => (
+              {nav.links.map(([href, text]) => (
                 <a key={text} href={href}>
                   {text}
                 </a>
