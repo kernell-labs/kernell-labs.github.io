@@ -1,7 +1,4 @@
-// Static export so GitHub Pages can serve it. basePath only on CI, so `npm run dev` stays at /.
-const repo = 'kernel-labs';
-
+// Served at the root of kernellabs-io.github.io, so no basePath needed.
 export default {
   output: 'export',
-  basePath: process.env.GITHUB_ACTIONS ? `/${repo}` : '',
 };

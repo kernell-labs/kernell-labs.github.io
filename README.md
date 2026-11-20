@@ -25,4 +25,4 @@ node test-style.mjs
 
 Pushing to `main` builds and publishes to GitHub Pages via [.github/workflows/deploy.yml](.github/workflows/deploy.yml). Enable it once under **Settings → Pages → Source: GitHub Actions**.
 
-`basePath` is set to `/kernel-labs` only on CI, so local dev stays at `/`. For a custom domain, drop the `basePath` line in [next.config.mjs](next.config.mjs) and add a `public/CNAME`.
+Lives at <https://kernellabs-io.github.io> — an org site, served at the root, so no `basePath`. For a custom domain later, add `public/CNAME` containing the bare domain.
