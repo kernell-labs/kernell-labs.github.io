@@ -232,6 +232,7 @@ export default function Page() {
   const [mode, setMode] = useState(1);
   const [sent, setSent] = useState(false);
   const [auto, setAuto] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) setAuto(false);
@@ -271,7 +272,10 @@ export default function Page() {
         >
           NEW
         </span>
-        <span>Kernel Edge: specialized small models that run on phones, laptops and edge hardware</span>
+        <span className="kl-ann-long">
+          Kernel Edge: specialized small models that run on phones, laptops and edge hardware
+        </span>
+        <span className="kl-ann-short">Kernel Edge: small models for any device</span>
         <span aria-hidden="true">→</span>
       </a>
 
@@ -291,29 +295,43 @@ export default function Page() {
             <Logo />
             <span style={s('font-weight: 600; font-size: 19px; letter-spacing: -0.02em')}>Kernel Labs</span>
           </a>
-          <div style={s('display: flex; flex-wrap: wrap; align-items: center; gap: 30px; font-size: 14px')}>
-            <a href="#products">Products</a>
-            <a href="#platform">Platform</a>
-            <a href="#sectors">Sectors</a>
-            <a href="#ondevice">Edge</a>
-            <a href="#deploy">Deployment</a>
-            <div style={s('display: flex; gap: 8px')}>
-              <a
-                href="#contact"
-                className="kl-btn kl-ghost"
-                style={s(
-                  'padding: 9px 16px; border-radius: 0; border: 1px solid #DFE1E6; color: #1F1F1F; font-weight: 500'
-                )}
-              >
-                Talk to an engineer
-              </a>
-              <a
-                href="#contact"
-                className="kl-btn"
-                style={s('padding: 9px 16px; border-radius: 0; background: #1F1F1F; color: #FFFFFF; font-weight: 500')}
-              >
-                Start building
-              </a>
+          <div className={menuOpen ? 'kl-menu kl-menu-open' : 'kl-menu'}>
+            <button
+              type="button"
+              className="kl-menu-toggle kl-btn"
+              aria-label="Menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#1F1F1F" strokeWidth="1.6" aria-hidden="true">
+                {menuOpen ? <path d="M4 4l10 10M14 4L4 14" /> : <path d="M2 5h14M2 9h14M2 13h14" />}
+              </svg>
+            </button>
+            {/* Tapping any link dismisses the dropdown. */}
+            <div className="kl-menu-body" onClick={() => setMenuOpen(false)}>
+              <a href="#products">Products</a>
+              <a href="#platform">Platform</a>
+              <a href="#sectors">Sectors</a>
+              <a href="#ondevice">Edge</a>
+              <a href="#deploy">Deployment</a>
+              <div className="kl-menu-cta" style={s('display: flex; gap: 8px')}>
+                <a
+                  href="#contact"
+                  className="kl-btn kl-ghost"
+                  style={s(
+                    'padding: 9px 16px; border-radius: 0; border: 1px solid #DFE1E6; color: #1F1F1F; font-weight: 500'
+                  )}
+                >
+                  Talk to an engineer
+                </a>
+                <a
+                  href="#contact"
+                  className="kl-btn"
+                  style={s('padding: 9px 16px; border-radius: 0; background: #1F1F1F; color: #FFFFFF; font-weight: 500')}
+                >
+                  Start building
+                </a>
+              </div>
             </div>
           </div>
         </nav>
@@ -357,9 +375,8 @@ export default function Page() {
                 </svg>
               </a>
               <h1
-                style={s(
-                  'margin: 0; font-weight: 400; font-size: clamp(68px, 10vw, 156px); line-height: 0.86; letter-spacing: -0.05em'
-                )}
+                className="kl-h1"
+                style={s('margin: 0; font-weight: 400; line-height: 0.86; letter-spacing: -0.05em')}
               >
                 Own your
                 <br />
@@ -923,6 +940,7 @@ export default function Page() {
           <div
             role="group"
             aria-label="Choose a sector"
+            className="kl-chips"
             style={s('display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px')}
           >
             {SECTORS.map((z, i) => {
@@ -1034,6 +1052,7 @@ export default function Page() {
           <div
             role="group"
             aria-label="Choose a device"
+            className="kl-chips"
             style={s(
               'display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; padding: 4px; border-radius: 0; background: #F6EFDF; margin-top: 12px'
             )}

@@ -31,4 +31,41 @@ a{color:#3B3F4A;text-decoration:none}a:hover{color:#1F1F1F}
 .kl-prog{width:0;animation:klprog 5s linear forwards}
 @keyframes klprog{to{width:100%}}
 input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #C3400C;outline-offset:2px}
+
+/* ---------- responsive ---------- */
+
+/* Anchor targets clear the sticky header instead of hiding under it. */
+[id]{scroll-margin-top:84px}
+
+/* Hero headline. "intelligence." is one unbreakable word, so the 68px floor
+   overflows below ~400px — shrink it only there and leave desktop untouched. */
+.kl-h1{font-size:clamp(68px,10vw,156px)}
+@media (max-width:480px){.kl-h1{font-size:clamp(42px,13vw,68px)}}
+
+/* Announcement: long copy on wide screens, short on narrow. */
+.kl-ann-short{display:none}
+@media (max-width:760px){.kl-ann-long{display:none}.kl-ann-short{display:inline}}
+
+/* Nav. One set of links: a flex row on desktop, a dropdown on mobile, so the
+   sticky header stays one line tall instead of wrapping to three.
+   Not <details>: Chrome gives closed details' content content-visibility:hidden,
+   which collapses it to zero width when used as the desktop layout container. */
+.kl-menu{display:flex;align-items:center}
+.kl-menu-toggle{display:none}
+.kl-menu-body{display:flex;flex-wrap:wrap;align-items:center;gap:30px;font-size:14px}
+@media (max-width:900px){
+  .kl-menu{position:relative}
+  .kl-menu-toggle{display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid #DFE1E6;background:#FFFFFF}
+  .kl-menu-body{position:absolute;right:0;top:calc(100% + 15px);z-index:20;flex-direction:column;align-items:stretch;gap:20px;min-width:230px;padding:20px;background:#FFFFFF;border:1px solid #ECEDF0;box-shadow:0 24px 48px -24px rgba(60,30,5,.3)}
+  .kl-menu:not(.kl-menu-open) .kl-menu-body{display:none}
+  .kl-menu-cta{flex-direction:column;align-items:stretch}
+  .kl-menu-cta > a{text-align:center}
+}
+
+/* Chip rows: one swipeable line beats three stacked rows on a phone. */
+@media (max-width:700px){
+  .kl-chips{flex-wrap:nowrap!important;justify-content:flex-start!important;overflow-x:auto;scrollbar-width:none;max-width:100%}
+  .kl-chips::-webkit-scrollbar{display:none}
+  .kl-chips > button{flex:0 0 auto}
+}
 @media (prefers-reduced-motion: reduce){.kl-ring,.kl-rot-in,.kl-bob,.kl-bob2,.kl-track,.kl-track-fast,.kl-pulse,.kl-caret{animation:none}.kl-btn:hover,.kl-tile:hover{transform:none}}
